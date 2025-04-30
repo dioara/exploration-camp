@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exploration Camp v1.3</title> <!-- Updated version -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Mobile Warning Overlay -->
+    <div id="mobile-warning" style="display: none;">
+        <div class="mobile-warning-content">
+            <h2>Mobile Experience Notice</h2>
+            <p>Exploration Camp is best experienced on a desktop browser.</p>
+            <p>The layout and controls are not yet optimized for mobile devices. You may encounter issues.</p>
+            <button onclick="document.getElementById("mobile-warning").style.display="none"">Proceed Anyway</button>
+        </div>
+    </div>
+
+    <h1>Exploration Camp</h1>
+
+    <!-- Main Container -->
+    <div id="main-container">
+
+        <!-- Left Column: Game Area -->
+        <div id="game-area">
+            <!-- Persistent UI -->
+            <div id="status-bar">
+                <span>Location: <strong id="location-display">Earth</strong></span>
+                <span>Credits: <strong id="credits-display">1000</strong> Cr</span>
+                <span>Fuel: <strong id="fuel-display">N/A</strong></span>
+                <span>Rocket: <strong id="rocket-display">None</strong> <img id="rocket-image" src="" alt="Rocket Image" style="display: none; height: 20px; vertical-align: middle;"></span>
+                <span>HP: <strong id="hp-display">N/A</strong></span>
+                <button id="show-instructions-button">Instructions</button>
+                <button id="restart-game-button">Restart Game</button>
+            </div>
+
+            <!-- Game Views Container -->
+            <div id="game-views">
+
+                <!-- Earth View -->
+                <div id="earth-view" class="game-view">
+                    <h2>Earth Command</h2>
+                    <div id="buy-rocket-section">
+                        <h3>Purchase Rocket</h3>
+                        <div id="buy-rocket-buttons">
+                            <!-- Buttons and Images populated by JS -->
+                        </div>
+                    </div>
+                    <div id="earth-services-section" style="display: none;">
+                         <h3>Earth Services</h3>
+                         <div>
+                             <label for="buy-fuel-amount">Buy Fuel (<span id="fuel-cost-unit">2</span> Cr/unit):</label>
+                             <input type="number" id="buy-fuel-amount" min="1" value="10">
+                             <button id="buy-fuel-button">Buy Fuel</button>
+                         </div>
+                         <div>
+                             <label for="repair-hp-amount">Repair HP (<span id="repair-cost-unit">5</span> Cr/HP):</label>
+                             <input type="number" id="repair-hp-amount" min="1" value="10">
+                             <button id="repair-hp-button">Repair HP</button>
+                         </div>
+                    </div>
+                    <div id="launch-section"> <!-- Wrapper for centering -->
+                        <button id="view-map-button">Launch Exploration</button>
+                        <p style="font-size: 0.8em; color: #aaa; margin-top: 5px;">Purchase a rocket, then launch into the solar system to explore planets!</p>
+                    </div>
+                </div>
+
+                <!-- Star Map View -->
+                <div id="map-view" class="game-view" style="display: none;">
+                    <h2>Star Map</h2>
+                    <canvas id="star-map-canvas"></canvas>
+                    <button id="back-to-hub-button">Back to Earth/Planet</button>
+                </div>
+
+                <!-- Planet View -->
+                <div id="planet-view" class="game-view" style="display: none;">
+                    <h2 id="planet-name">Planet Name</h2>
+                    <p id="planet-description">Planet description...</p>
+                    <div id="planet-activities">
+                        <button id="planet-gather-button" style="display: none;">Gather Resources (Minigame)</button>
+                        <button id="planet-sell-button" style="display: none;">Sell Resources</button>
+                        <button id="planet-quiz-button" style="display: none;">Take Quiz</button>
+                        <button id="planet-leave-button">Leave Planet (View Map)</button>
+                    </div>
+                    <!-- Integrated Interaction Area -->
+                    <div id="planet-interaction-area" style="display: none;">
+                        <div id="gather-minigame-section" style="display: none;">
+                            <h3>Resource Gathering</h3>
+                            <canvas id="gather-canvas"></canvas>
+                            <p>Use Arrow Keys to move. Collect <span id="resource-target"></span>.</p>
+                            <button id="exit-gather-button">Stop Gathering</button>
+                        </div>
+                        <div id="planet-facts-section" style="display: none;">
+                            <h3>Did You Know?</h3>
+                            <p id="planet-fact-display"></p>
+                        </div>
+                        <div id="quiz-section" style="display: none;">
+                            <h3>Planet Quiz</h3>
+                            <p id="quiz-question">Question text...</p>
+                            <ul id="quiz-answers">
+                                <!-- Answers populated by JS -->
+                            </ul>
+                            <p id="quiz-result"></p>
+                            <button id="next-quiz-question-button" style="display: none;">Next Question</button>
+                            <button id="finish-quiz-button" style="display: none;">Finish Quiz</button>
+                            <button id="stop-quiz-button" style="display: none;">Stop Quiz</button>
+                        </div>
+                        <div id="market-section" style="display: none;">
+                            <h3>Resource Market</h3>
+                            <p>Sell your gathered resources for Credits.</p>
+                            <div id="market-content">
+                                <p>Your inventory is empty.</p>
+                            </div>
+                            <p>Total Value: <strong id="market-total-value">0</strong> Cr</p>
+                            <button id="market-sell-all-button">Sell All</button>
+                            <button id="exit-market-button">Close Market</button>
+                        </div>
+                    </div>
+                    <div id="inventory-section">
+                        <h3>Inventory</h3>
+                        <ul id="inventory-list"><li>Empty</li></ul>
+                    </div>
+                </div>
+
+                <!-- Travel View -->
+                <div id="travel-view" class="game-view" style="display: none;">
+                    <h2>Traveling...</h2>
+                    <p>Destination: <strong id="travel-destination"></strong></p>
+                    <progress id="travel-progress-bar" value="0" max="100"></progress>
+                    <span id="travel-progress-text">0%</span>
+                    <p id="travel-fact">Did you know? Space is big!</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Right Column: Message Log -->
+        <div id="message-log-container">
+            <h3>Log</h3>
+            <div id="message-log"></div>
+        </div>
+
+    </div>
+
+    <!-- Instructions Modal -->
+    <div id="instructions-modal" class="modal" style="display: none;">
+         <div class="modal-content">
+             <span id="instructions-close-button" class="close-button">&times;</span>
+             <h2>How to Play Exploration Camp</h2>
+             <div id="instructions-content">
+                 <h4>Goal:</h4>
+                 <p>Visit all 8 planets in the Solar System (Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune).</p>
+                 <h4>Starting Out:</h4>
+                 <p>You begin on Earth with 1000 Credits. First, you need to buy a rocket.</p>
+                 <h4>Rockets:</h4>
+                 <p>Purchase rockets on Earth. Each has different stats and appearance:</p>
+                 <ul>
+                     <li><strong>Cost:</strong> Credits needed to buy.</li>
+                     <li><strong>HP (Health):</strong> How much damage the rocket can take.</li>
+                     <li><strong>Fuel Capacity:</strong> Maximum fuel units it can hold.</li>
+                     <li><strong>Efficiency:</strong> Affects how much fuel is used during travel (lower is better).</li>
+                 </ul>
+                 <h4>Fuel:</h4>
+                 <p>Buy fuel on Earth using Credits. Fuel is essential for traveling between planets. Running out of fuel mid-trip is bad!</p>
+                 <h4>Travel:</h4>
+                 <p>Use the "Launch / View Star Map" button. Click on a planet to see distance and estimated fuel cost. Click "Initiate Travel" if you have enough fuel.</p>
+                 <h4>Rocket Health (HP):</h4>
+                 <p>Returning to Earth with <strong>zero fuel</strong> will damage your rocket (lose HP). You can repair your rocket's HP on Earth using Credits. If your rocket's HP reaches 0 while you are away from Earth, the game is over!</p>
+                 <h4>Exploring Planets:</h4>
+                 <p>When you arrive at a planet (other than Earth), you can perform activities to earn Credits:</p>
+                 <ul>
+                     <li><strong>Gather Resources (Minigame):</strong> Click the button to start a mini-game. Use arrow keys to navigate and collect resources specific to the planet.</li>
+                     <li><strong>Sell Resources:</strong> Click "Sell Resources" to open the market view and exchange your gathered materials for Credits.</li>
+                     <li><strong>Take Quiz:</strong> Click "Take Quiz" to answer 5 multiple-choice questions about the planet within the main view. Correct answers earn Credits. The quiz becomes unavailable after completion but resets if you leave the planet and return later.</li>
+                 </ul>
+                 <h4>Winning the Game:</h4>
+                 <p>Successfully land on all 8 planets (Mercury through Neptune). Good luck, explorer!</p>
+             </div>
+         </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+    <script src="script.js"></script>
+    <footer>
+        © All rights reserved, <a href="https://lampstand.consulting" target="_blank">Lampstand Consulting</a>
+    </footer>
+</body>
+</html>
